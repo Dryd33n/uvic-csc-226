@@ -57,7 +57,6 @@ $T'(n+1)$   & $=$  & $T'(\lfloor \frac{5(n+1)}{7} \rfloor )+T'(\lfloor \frac{n+1
 \end{tabular}
 \end{table}\\
 
-Since we have shown that $T'(n+1)\leq 7c(n+1)$ our claim holds and thus, by induction, our claim also holds for all values of $n$. We can then conclude that $T'(n)=\Theta(n)$ and consequently, $T(n)=\Theta(n)$.
-
+Since we have shown that $T'(n+1)\leq 7c(n+1)$ our claim holds and thus, by induction, our claim also holds for all values of $n$. Since $T(n)\leq T'(n)$ we have that $T(n) \leq 7cn$ for some constant $c>0$ and thus $T(n) \in \Theta(n)$.\\\\
 
 \end{document}
