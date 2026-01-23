@@ -1,0 +1,63 @@
+\documentclass{article}
+\usepackage[legalpaper, portrait, margin=0.5in]{geometry}
+\usepackage{amsmath, cancel, amssymb}
+
+\title{CSC226 Exercise 2}
+\author{Dryden Bryson}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\newpage
+
+\section*{Exercise 2.}
+
+The overall running time of Quickselect with BFPRT partitioning with subarrays of size 7 can be modelled by the following recurrence:
+
+$$T(n)=\begin{cases}
+c_{b} & \text{if} \;n \leq 1\\
+T(\lfloor \frac{5n}{7} \rfloor ) + T(\lfloor \frac{n}{7} \rfloor ) + c_{1}n+c_{2} & \text{if} n \geq 2
+\end{cases}$$
+
+Where:
+\begin{itemize}
+    \item $T(\lfloor \frac{5n}{7} \rfloor )$ is the worst case recursive quick sort call, this is found since there is $\lfloor \frac{n}{7} \rfloor $ sub-arrays when selecting our pivot. And once we find our median of medians, half of the medians ($\lfloor \frac{n}{14} \rfloor $) are guaranteed to be bigger, and since each median has 4 elements which are $\leq$ to the median, when we run recurse upon quicksort we are guaranteed to be getting rid of $\lfloor 4\cdot \frac{n}{14} \rfloor $ Thus we recurse on, in the worst case: $$\lfloor n-\frac{4n}{14} \rfloor = \lfloor n-\frac{2n}{7} \rfloor =\lfloor \frac{5n}{7} \rfloor $$
+    of the array.
+    \item $T(\lfloor \frac{n}{7} \rfloor )$ is for finding the medians of our $\lfloor \frac{n}{7} \rfloor $ sub-arrays.
+    \item $c_{1}n$ linear constant work, i.e sorting sub arrays, partitioning array.
+    \item $c_{2}$ constant work
+\end{itemize}
+Let $c=c_{b}+c_{1}+c_{2}$ We form $T'(n)$ such that $T'(n) \geq T(n)$ for simplification, we have:
+
+$$
+T'(n)=
+\begin{cases}
+c & \text{if}\;n\leq 1\\
+T(\lfloor \frac{5n}{7} \rfloor )+ T(\lfloor \frac{n}{7} \rfloor) + cn & \text{if}\;n \geq 2
+\end{cases}
+$$
+\\
+We will proceed with the proof by applying induction on $n$:\\
+\textbf{Claim:} $T'(n) \leq 7cn$ for $n\geq 1$\\\\
+\textbf{Proof:} By induction on $n$\\\\
+\textbf{Basis:} When $n=1$, $T'(n)=c=cn\leq 7cn$\\\\
+\textbf{Induction Hypothesis:} Suppose $T'(n)\leq 7cn$ for $n \in \left\{ 1,2,\dots,k \right\} $ for some $k\geq 1$\\\\
+\textbf{Induction Step:} Consider $T'(n+1)$
+\begin{table}[htp]
+\centering
+\begin{tabular}{ccll}
+$T'(n+1)$   & $=$  & $T'(\lfloor \frac{5(n+1)}{7} \rfloor )+T'(\lfloor \frac{n+1}{7} \rfloor )+c(n+1)$  &   \\
+   &  $\leq$ & $7c(\lfloor \frac{5(n+1)}{7} \rfloor )+7c(\lfloor \frac{n+1}{7} \rfloor )+c(n+1)$  & \text{by the induction hypothesis}  \\
+   &  $\leq$ &  $7c( \frac{5(n+1)}{7}  )+7c( \frac{n+1}{7}  )+c(n+1)$  &  \text{Since} $\forall x \in \mathbb{R}, \lfloor x \rfloor  \leq x$  \\
+   & $=$  &  $ \frac{\cancel{7}c\cdot 5(n+1)}{\cancel{7}}  )+\frac{\cancel{7}c \cdot( n+1)}{\cancel{7}}  +c(n+1)$  &   \\
+   & $=$  &  $5c(n+1)+c(n+1)+c(n+1)$ &   \\
+   & $=$  &  $7c(n+1)$ &   \\
+   &   &   &   \\
+\end{tabular}
+\end{table}\\
+
+Since we have shown that $T'(n+1)\leq 7c(n+1)$ our claim holds and thus, by induction, our claim also holds for all values of $n$. We can then conclude that $T'(n)=\Theta(n)$ and consequently, $T(n)=\Theta(n)$.
+
+
+\end{document}
