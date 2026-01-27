@@ -1,0 +1,26 @@
+\documentclass{article}
+\usepackage[legalpaper, portrait, margin=0.5in]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\title{CSC226 Exercise 3}
+\author{Dryden Bryson}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\newpage
+
+\section*{Exercise 3.}
+First, let us determine under which conditions a given key will hash to index 1 meaning $h(k)=1$. We have that:
+
+$$h(k)=1+(k \bmod(m-1))=1$$
+For the hashing function to return 1, $k \bmod(m-1) = 0$, which means that $k$ must be a multiple of $m-1$. So to find the number of keys that hash to index 1, we need to find the number of multiples of $m-1$ when we have $n$ elements.\\\\
+Since the function $k\bmod(m-1)$ has a range of $\{0,1,2,\dots,m-2\}$ which we can trivially see has $m-1$ elements by the fact that if we just add 1 to each element we have the set $\left\{ 1,2,3,\dots,m-1 \right\} $ which clearly contains $m-1$ elements.\\\\
+Assuming that the $n$ keys are uniformly randomly distributed then for any key, the probability that it hashes to index 1 is $\frac{1}{m-1}$, since there are $m-1$ possible outputs of the function $k \bmod(m-1)$ and only one of those outputs will result in the hash function returning 1.\\\\
+We can expand this to find the expected number of keys that hash to index 1 by multiplying the probability that a given key hashes to index 1 by the total number of keys $n$:
+$$n \cdot \frac{1}{m-1} = \frac{n}{m-1}$$
+Thus, the expected number of keys that hash to index 1 is $\frac{n}{m-1}$.
+
+\end{document}
