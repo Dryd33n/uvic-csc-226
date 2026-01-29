@@ -1,18 +1,33 @@
 #include "hash_tables.h"
 #include <stdlib.h>
 
+/* HASH TABLE WITH OPEN ADDRESSING AND LINEAR PROBING IMPLEMENTATION
+ *
+ * Credits:
+ * This implementation is adapted from the implementation provided from GeeksforGeeks
+ * https://www.geeksforgeeks.org/dsa/program-to-implement-hash-table-using-open-addressing/
+ */
+
+
+
+
 // Special markers for array slots
 #define EMPTY -1
 #define TOMBSTONE -2
 
-// Hash function - convert key to array index
+
+
+
+
 static size_t hash(int key, size_t capacity) {
-    // Convert too unsigned to handle negative keys properly
     unsigned int uk = (unsigned int)key;
     return uk % capacity;
 }
 
-// Create a new linear probing hash map
+
+
+
+
 LinearProbingMap* lp_create(size_t capacity) {
     LinearProbingMap* map = malloc(sizeof(LinearProbingMap));
     
@@ -29,7 +44,10 @@ LinearProbingMap* lp_create(size_t capacity) {
     return map;
 }
 
-// Insert or update a key-value pair
+
+
+
+
 void lp_put(LinearProbingMap* map, int key, int value) {
     // Get starting position
     size_t i = hash(key, map->capacity);
@@ -88,16 +106,6 @@ bool lp_remove(LinearProbingMap* map, const int key) {
     
     // Key not found
     return false;
-}
-
-// Get number of elements
-size_t lp_size(const LinearProbingMap* map) {
-    return map->size;
-}
-
-// Get load factor
-double lp_load_factor(const LinearProbingMap* map) {
-    return (double)map->size / (double)map->capacity;
 }
 
 // Free all memory

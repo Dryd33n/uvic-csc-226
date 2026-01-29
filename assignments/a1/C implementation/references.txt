@@ -1,0 +1,11 @@
+Get Median Function:
+https://www.geeksforgeeks.org/c/find-median-of-numbers-in-an-array-in-c/
+
+// Hash Table with Linear Probing:
+https://www.geeksforgeeks.org/dsa/program-to-implement-hash-table-using-open-addressing/
+
+// Hash Table with Separate Chaining:
+https://www.geeksforgeeks.org/dsa/implementation-of-hash-table-in-c-using-separate-chaining/
+
+// Timing
+https://stackoverflow.com/questions/62910438/monotonic-clock-in-c

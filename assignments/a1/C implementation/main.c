@@ -23,24 +23,13 @@ struct profileProps getProfileProps() {
     struct profileProps props;
 
     // Get load factor from user
-    printf("Enter load factor (0 < load factor <= 1): ");
+    printf("Enter load factor: ");
     scanf("%lf", &props.loadFactor);
 
-    // Validate load factor
-    while (props.loadFactor <= 0 || props.loadFactor > 1) {
-        printf("Invalid load factor. Enter value between 0 and 1: ");
-        scanf("%lf", &props.loadFactor);
-    }
-
     // Get map size from user
-    printf("Enter map size (positive integer): ");
+    printf("Enter map size: ");
     scanf("%d", &props.mapSize);
 
-    // Validate map size
-    while (props.mapSize <= 0) {
-        printf("Invalid size. Enter positive integer: ");
-        scanf("%d", &props.mapSize);
-    }
 
     // Get operation style from user
     printf("Select operation style:\n");
@@ -51,26 +40,21 @@ struct profileProps getProfileProps() {
     printf("Enter choice (1-4): ");
     scanf("%d", &props.operationStyle);
 
-    // Validate operation style
-    while (props.operationStyle < 1 || props.operationStyle > 4) {
-        printf("Invalid choice. Enter 1-4: ");
-        scanf("%d", &props.operationStyle);
-    }
-
     return props;
 }
 
 // Get time in nanoseconds
+// Credits: https://stackoverflow.com/questions/62910438/monotonic-clock-in-c
 long long get_time_ns(void) {
     struct timespec ts;
     clock_gettime(CLOCK_MONOTONIC, &ts);
-    return (long long)ts.tv_sec * 1000000000LL + ts.tv_nsec;
+    return ts.tv_sec * 1000000000LL + ts.tv_nsec;
 }
 
 // Generate random keys
 int* generate_keys(int n) {
     int* keys = malloc(n * sizeof(int));
-    srand(42); // Fixed seed for reproducibility
+    srand(69); // Nice
     for (int i = 0; i < n; i++) {
         keys[i] = rand();
     }
@@ -82,6 +66,8 @@ int compare_doubles(const void* a, const void* b) {
     return (diff > 0) - (diff < 0);
 }
 
+// Credits:
+// https://www.geeksforgeeks.org/c/find-median-of-numbers-in-an-array-in-c/
 double get_median(double* times, int n) {
     qsort(times, n, sizeof(double), compare_doubles);
     if (n % 2 == 0) {
