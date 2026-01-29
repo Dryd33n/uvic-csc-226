@@ -1,0 +1,6 @@
+# ninja log v6
+3	90	7913335462126847	CMakeFiles/C_implementation.dir/main.c.obj	9381bb052c24980c
+91	156	7913335463007740	C_implementation.exe	b55e10892e644c9e
+1	318	7913342513852057	build.ninja	91ef9d7db26bee70
+6	69	7913325298815633	CMakeFiles/C_implementation.dir/linear_probing.c.obj	11d6204db52d8c02
+8	75	7913328780221387	CMakeFiles/C_implementation.dir/chaining.c.obj	d5a022e4deebeab4

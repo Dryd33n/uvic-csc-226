@@ -1,0 +1,5 @@
+1. Maps will not be resizable, since you wouldn't resize a map for separate chaining, thus no need for resizing logic.
+2. Running 200 iterations of experiments just to be safe
+3. Using a fixed set of keys for all experiments to ensure consistency
+4. Using a simple hash function (like modulo) for simplicity
+5.
