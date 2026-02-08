@@ -1,0 +1,40 @@
+\documentclass{article}
+\usepackage[legalpaper, portrait, margin=0.5in]{geometry}
+\usepackage {amsmath}
+\usepackage {amssymb}
+\usepackage {enumerate}
+
+\title{CSC226 Exercise 4}
+\author{Dryden Bryson}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\newpage
+\section*{Exercise 4.}
+The following implementation of the union find data structure defines that:
+\begin{itemize}
+    \item Each set is a undirected, connected graph with no additional requirements beyond that
+    \item The set representative is the element in the set with the smallest numerical value
+    \item The graph is represented using an adjacency matrix $M$ of size $n \times n$ where $n$ is the number of elements in the union find data structure.
+\end{itemize}
+
+
+\subsection*{Union Operation Implementation}
+For two elements $u$ and $v$, in any set. The union operation adds a new edge between $u$ and $v$. The two previously unconnected components of the graph (sets) are now connected by the new edge, and the new set is representive by the smaller of the two representatives of the original sets.\\\\
+Should $u$ and $v$ be in the same set, we will still proceed with adding the edge between $u$ and $v$, the set representative will remain the minimum element of that connected component. And thus the union operation correctly, has no effect when the two elements are already in the same set.\\\\
+Should $u$ and $v$ already maintain an edge between them, we will still proceed with updating the adjacency matrix, but the resulting changed to the adjacency matrix will have no result.
+\subsubsection*{Union Operation Running Time}
+The union operation involves updating the adjacency matrix, which in total requires 
+\begin{enumerate}[i]
+    \item 4 Array indexing operations for M[$u$][$v$] and M[$v$][$u$]
+    \item 2 Writing operations for M[$u$][$v$] and M[$v$][$u$]
+\end{enumerate}
+Thus we have that $T(n)=T(6)$ and thus $T(n)\in \Theta(1)$ meaning that the union operation is constant time in all cases.\\\\
+
+\subsection*{Find Operation}
+The find operation is implemented by performing a DFS traversal on the tree while tracking the minimum element, once all elements in the conncted component have been traversed, we have found the minimum element and thus the set representative
+\subsubsection*{Find Operation worst case running time}
+The worst case for the find operation is when all the elements in $U$ are in the same set. In this case, the running time of the find operation is defined by the running time of a DFS traversal of $n$ elements using an adjacency matrix. The DFS traversal will require $\Theta(n^2)$ time since we have to check each element in the adjacency matrix to find the neighbors of each node. Thus, the worst case running time of the find operation is $\Theta(n^2)$.
+\end{document}
