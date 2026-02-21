@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
 
-timePower = 0.36
+timePower = 0.3
 
 # Read the CSV file
 df = pd.read_csv('results.csv')

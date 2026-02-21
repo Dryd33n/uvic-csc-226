@@ -8,127 +8,121 @@
  * https://www.geeksforgeeks.org/dsa/implementation-of-hash-table-in-c-using-separate-chaining/
  */
 
-
-
-
-// Standard hashing function, this is the same as in linear_probing.c
-static size_t hash(const int key, const size_t capacity) {
-    const unsigned int uk = (unsigned int)key; //makes any negative key positive
-    return uk % capacity;
+// same hash function as linear probing
+static size_t hash(int key, size_t capacity){
+    unsigned int k = (unsigned int) key;  // make negative keys positive
+    return k % capacity;
 }
 
 
 
+ChainingMap* ch_create(size_t capacity){
 
+    ChainingMap* m = malloc(sizeof(ChainingMap));
 
-// create hash table using chaining
-ChainingMap* ch_create(const size_t capacity) {
-    ChainingMap* map = malloc(sizeof(ChainingMap)); //allocate space for map struct
-    
-    map->capacity = capacity; //set capacity
-    map->size = 0; //intialize number of elements to 0
-    
+    m->capacity = capacity;
+    m->size = 0;
 
-    map->table = calloc(capacity, sizeof(Node*));  // allocated space for nodes in array
-    
-    return map;
+    // allocate array of node pointers
+    m->table = calloc(capacity, sizeof(Node*));
+
+    return m;
 }
 
 
 
+void ch_put(ChainingMap* map, int key, int value){
 
+    size_t index = hash(key, map->capacity);
 
-void ch_put(ChainingMap* map, const int key, const int value) {
-    const size_t insertionIndex = hash(key, map->capacity); //get index from hash function
+    Node* curr = map->table[index];
 
-    // look through linked list at that index
-    Node* current = map->table[insertionIndex];
-    while (current != NULL) { //keep looking as long as node isn't null
-        if (current->key == key) { //key has been found, update key and exit function
-            current->value = value;
+    // check if key already exists
+    while (curr != NULL){
+        if (curr->key == key){
+            curr->value = value;   // update existing
             return;
         }
-        current = current->next;
+        curr = curr->next;
     }
 
-    // Key not found - create new node and add at head of list
-    Node* new_node = malloc(sizeof(Node));
-    new_node->key = key;
-    new_node->value = value;
-    new_node->next = map->table[insertionIndex];  // Point to old head
-    map->table[insertionIndex] = new_node;        // New node becomes head
+    // not found -> insert new node at head
+    Node* n = malloc(sizeof(Node));
+    n->key = key;
+    n->value = value;
+    n->next = map->table[index];
+
+    map->table[index] = n;
     map->size++;
 }
 
 
 
+int ch_get(const ChainingMap* map, int key, bool* found){
 
+    size_t index = hash(key, map->capacity);
 
-int ch_get(const ChainingMap* map, const int key, bool* found) {
-    const size_t insertionIndex = hash(key, map->capacity);
+    Node* curr = map->table[index];
 
-    // Walk the chain looking for the key
-    Node* current = map->table[insertionIndex];
-    while (current != NULL) {
-        if (current->key == key) {
+    while (curr != NULL){
+        if (curr->key == key){
             *found = true;
-            return current->value;
+            return curr->value;
         }
-        current = current->next;
+        curr = curr->next;
     }
-    
-    // Key not found
+
     *found = false;
     return 0;
 }
 
-// Remove a key-value pair
-bool ch_remove(ChainingMap* map, int key) {
-    const size_t insertionIndex = hash(key, map->capacity);
 
-    Node* current = map->table[insertionIndex];
+
+bool ch_remove(ChainingMap* map, int key){
+
+    size_t index = hash(key, map->capacity);
+
+    Node* curr = map->table[index];
     Node* prev = NULL;
 
-    // Walk the chain
-    while (current != NULL) {
-        if (current->key == key) {
-            // Found it - remove from chain
-            if (prev == NULL) {
-                // Removing head of list
-                map->table[insertionIndex] = current->next;
+    while (curr != NULL){
+
+        if (curr->key == key){
+
+            if (prev == NULL){
+                // removing first node
+                map->table[index] = curr->next;
             } else {
-                // Removing middle or end of list
-                prev->next = current->next;
+                prev->next = curr->next;
             }
-            
-            free(current);
+
+            free(curr);
             map->size--;
             return true;
         }
-        
-        prev = current;
-        current = current->next;
+
+        prev = curr;
+        curr = curr->next;
     }
-    
-    // Key not found
-    return false;
+
+    return false;  // not found
 }
 
-// Free all memory
-void ch_destroy(ChainingMap* map) {
-    // Free all nodes in all chains
-    for (size_t i = 0; i < map->capacity; i++) {
-        Node* current = map->table[i];
-        while (current != NULL) {
-            Node* next = current->next;
-            free(current);
-            current = next;
+
+
+void ch_destroy(ChainingMap* map){
+
+    for (size_t i = 0; i < map->capacity; i++){
+
+        Node* curr = map->table[i];
+
+        while (curr != NULL){
+            Node* next = curr->next;
+            free(curr);
+            curr = next;
         }
     }
-    
-    // Free the table array
+
     free(map->table);
-    
-    // Free the map struct itself
     free(map);
 }

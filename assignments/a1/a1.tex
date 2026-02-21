@@ -1,5 +1,9 @@
 \documentclass{article}
 \usepackage[legalpaper, portrait, margin=0.5in]{geometry}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{enumitem}
+\usepackage{url}
 
 \title{CSC226 Assignment 1}
 \author{Dryden Bryson}
@@ -10,6 +14,99 @@
 \maketitle
 \newpage
 \section*{Introduction}
-Seperate chaining and open adressing are both collision management techniques used when implementing hash tables.
+Seperate chaining and open adressing are both collision management techniques used when implementing hash tables. Separate chaining relies on linked lists, initialized at each entry in the hash table, thus when a collision occurs it can be added to the linked list. Open addressing allows elements to be indexed to different addresses in the table when a collision occurs. Seperate chaining is a simpler technique to implement, which one could assume that the simplicity would indicate a more efficient implementation but it would turn out that, that is not the case.
+\subsection*{Methodology}
+To compare the two techniques, we will use experimental analysis. We will implement both techniques and then run them on the same data set. The following factors in the experimental analysis were considered and chose: 
+\begin{itemize}
+    \item \textbf{Programming Language}: C has been chosen as the language to implement the two schemes as the language has minimal abstraction overhead, and direct control of the memory layout since the two techniques can be heavily affected by the memory layout and allocation. The code was compiled using the \texttt{gcc} compiler.
+    \item \textbf{Domain of experimentation}: Since we want to get an idea of the performance in all scenarios, all combinations of the following have been considered. \begin{itemize}
+        \item \textbf{Load Factor}: Is tested from 0.5 to 0.95 in increments of 0.05
+        \item \textbf{Map Size}: For this experiment fixed map sizes of $2^{n}$ where $n=\{5,6,7,...,24\}$ 
+    \end{itemize}
+    Additionally each of the following possible combinations was executed 10 times to get an average time for each combination.
+    \item \textbf{Data selection:} The keys are generated using C's psuedo-random number generator using a fixed seed to ensure that the experiments are consistent for both techniques. 
+    \item \textbf{Operations:} In an attempt to reproduce a realistic utilization of the hash maps, the following operations were performed in a fixed random order accross experiments with the following probabilities:
+    \begin{itemize}
+        \item 50\% of operations are insertions
+        \item 40\% of operations are searches
+        \item 10\% of operations are deletions
+    \end{itemize}
+    \item \textbf{Hashing function:} The following basic hashing function was used: \texttt{h(k) = k mod m} where $k$ is the key and $m$ is the size of the hash table. 
+    \item \textbf{Timing:} Timing is performed at the nanosecond level using the \texttt{clock\_gettime} function with the \texttt{CLOCK\_MONOTONIC} clock, which is not affected by changes in the system time and provides high-resolution timing. Only the operations are timed to avoid timing overhead from the parts of the code running the experiment, a median is calculated from the 10 runs to get a accurate representation of the time to exclude outliers.
+    \item \textbf{Hardware:} The experiments were run on a machine with the following specifications: \begin{itemize}
+        \item CPU: Intel Core i7-1360P
+        \item RAM: 32GB LPDDR5 (Dual Channel, 6000MHz)
+        \item OS: Windows 11
+    \end{itemize}
+    In an attempt to reduce as much fluctuation in system performance, the device was put into airplane mode, with all other applications closed and the power settings were set to "Best Performance" to ensure that the CPU is running at its maximum performance level.
+\end{itemize}
+\newpage
+\subsection*{Results}
+The following visualizations show the results of the experiments.\\
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\linewidth]{surface_comparison.png}
+    \caption{3D Surface plot comparison of separate chaining and open addressing.}
+\end{figure}\\
+To begin we can look at this 3d surface plot, where the \texttt{x} and \texttt{y} axes represent the load factor and map size respectively, and the \texttt{z} axis represents the time taken for the operations in ms. While this visualization does hide some of the more specific details which we will see later. This gives us a decent overall picture of the performance of the two techniques. We can see in general that linear probing performs better with accross all load factors and map sizes, but the difference is more significant at higher load factors and smaller map sizes. Now we can look at some more specific visualizations to get a better picture of the performance of the two techniques.\\
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\linewidth]{line_comparison_1.png}
+\end{figure}\\
+Given the following figures, where the \texttt{x} axis represents the load factor and the \texttt{y} axis represents the time taken for the operations in ms, we can again see that linear probing consistently performs better than seperate chaining, particulary at low to moderate values of $\alpha$. We can see a slight degredation of performance for linear probing as load factor increases, but not the exponential explotion that we would expect to see. This is most likely due to the combination of different operations being performed and not a sole focus on insertions. Both linear probing and seperate chaining have a relatively linear correlation between load factor and time, but seperate chaining has a much steeper slope, which indicates that the performance of seperate chaining degrades much more significantly as the load factor increases.\\
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\linewidth]{line_comparison_2.png}
+\end{figure}\\
+Finally we can look at the following figures, where the \texttt{x} axis represents the map size and the \texttt{y} axis represents the time taken for the operations in ms. We can see that as the map size increases, both linear probing and seperate chaining explode in run time, this is partially due to the exponential nature of the increase in map sizes, and a fractional exponential scaling has been applied to the graphs to compensate for that. We can see that linear probing consistently performs better than seperate chaining, particularly at higher map sizes. The performance of seperate chaining degrades much more significantly as the map size increases.
+
+\newpage
+\subsection*{Conclusion}
+The goal of this analysis was to compare the performance of seperate chaining and linear probing in a real worl application. The results of the experiments show that linear probing consistently outprerforms seperate chaining across almost all load factors. The most likely reasoning for this result is due to the memory layout of the two techniques, linear probing stores all of the elements in a continuous sequence in memory, which allows for better performance when using that hash tables, where as in seperate chaining each element in the hash table is a pointer to a linked list, which could be scattered anywhere in memory, which can lead to worse performance. The experiment unfortunately does have some holes that were not considered, for example resizing of maps was not considered. Additionally the use of adversarial inputs was not considered which may have demonstrated more significant performance differences. Additionally the use of a singular device for testing may have introduced bias, as well as the use of the windows operating system. Additionally the different operations could have been tested separately to get a better understanding but since we were representing the real world, the mixed operation analysis seemed more fitting. Although it is almost imposible to deterministically say that one algorithm is better then another, due to the wide variety of different uses and parameters. Based on what was experiment it is fair to conclude that on average, linear probing has better overall performance then separate chaining.
+
+\begin{thebibliography}{9}
+
+\bibitem{gfg-median}
+GeeksforGeeks. (2025a, July 23).
+\textit{How to find median of numbers in an array in C?}
+Available at: \url{https://www.geeksforgeeks.org/c/find-median-of-numbers-in-an-array-in-c/}
+
+\bibitem{gfg-open-addressing}
+GeeksforGeeks. (2025b, July 23).
+\textit{Program to implement hash table using open addressing.}
+Available at: \url{https://www.geeksforgeeks.org/dsa/program-to-implement-hash-table-using-open-addressing/}
+
+\bibitem{gfg-separate-chaining}
+GeeksforGeeks. (2026, January 31).
+\textit{Implementation of hash table in C/C++ using separate chaining.}
+Available at: \url{https://www.geeksforgeeks.org/dsa/implementation-of-hash-table-in-c-using-separate-chaining/}
+
+\bibitem{stackoverflow-monotonic}
+Z. Alessandro. (2020, July 15).
+\textit{Monotonic clock in C.}
+Stack Overflow.
+Available at: \url{https://stackoverflow.com/questions/62910438/monotonic-clock-in-c}
+
+\bibitem{gfg-mpl}
+GeeksforGeeks. (2025c, July 23).
+\textit{Matplotlib Tutorial.}
+Available at: \url{https://www.geeksforgeeks.org/python/matplotlib-tutorial/}
+
+\end{thebibliography}
+
+\newpage
+\section*{Reflection}
+\subsection*{a)}
+Once I got started on this assignment I actually found it alot more enjoyable then I thought I would, it was fun to refresh on my knowledge of C and Python for plotting, but more importantly it was enjoyable to take the time to think about all the factors potentially affecting a experimental analysis of an algorithm. I did find it frustrating at times since it is very difficult to perfectly time an algorithm unless you are measuring individiual instructions in machine code, which bothered me to know my results weren't entirely accurate even if they still gave a good idea of what was going on. I think that this was the first assignment I've done in a DSA course that actually provides some real life experience, which again made the assignment fun to do. In the end it was very rewarding to be able to put together this report after having put in the effort to collect all the data.
+
+\subsection*{b)}
+\begin{enumerate}
+  \item \textbf{Methodology and Thoroughness: } I think that the methodology itself was very good in terms of experimental analysis, but to receive 4 marks it was specified that different approaches needed to be considered, and I only considered the experimental component. I think it could have been beneficial to consider a theoretical analysis alongside the experimental analysis, as the differences between the 2 techniques might have helped draw some more conclusions, regardless, $\boxed{3/4}$
+  \item \textbf{Conclusions:} I believe my conclusion satisified all requirements, the conclusion was clearly connected to the results found through experimental evaluation, and the issues of using only experimental analysis were described aswell. $\boxed{4/4}$
+  \item \textbf{Scientific Context:} I think some reference to the broader context was made but it was not heavily elaborated on and was rather minimal $\boxed{1.5/4}$
+  \item \textbf{Quality and Clarity of Presentation:} The document was already written in the proffesional typesetting language \LaTeX, which is a standard for this type of document and I believe that the tone and quality of writing is high. Additionally the visualizations are all cleare and well labeled, which were all generated using Python's Matplotlib library. $\boxed{4/4}$
+\end{enumerate}
+
+
 
 \end{document}
