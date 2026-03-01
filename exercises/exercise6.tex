@@ -1,0 +1,64 @@
+\documentclass{article}
+\usepackage[legalpaper, portrait, margin=0.5in]{geometry}
+\usepackage {amsmath}
+\usepackage {amssymb}
+\usepackage {enumerate}
+\usepackage {pifont}
+\newcommand{\cmark}{\ding{51}}%
+\newcommand{\xmark}{\ding{55}}%
+
+
+\title{CSC226 Exercise 6}
+\author{Dryden Bryson}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\newpage
+The first two cases of our "reccurence" $V(i)$ are trivial: 
+$$\begin{cases}
+c_{0} &\text{if}\;i=0\\
+c_{0}+c_{1}&\text{if}\;i=1
+\end{cases}$$
+When $i \geq 2$ the following 3 mutually exlcusive cases exist: 
+\begin{itemize}
+    \item Coin $i$ is not selected:
+    \begin{table}[htp]
+    \;\;\;\;\;\;\;\;\;\begin{tabular}{|c|c|c|}
+        \hline
+       \dots & $V(i-1)$  &  i\;\;\xmark \\
+       \hline
+    \end{tabular}
+    \end{table}\\
+    This case is: $$V(i-1)$$
+
+    \item Coin $i$ is selected but $i-1$ is not:
+    \begin{table}[htp]
+    \;\;\;\;\;\;\;\;\;\begin{tabular}{|c|c|c|c|}
+        \hline
+       \dots & $V(i-2)$  & $i-1$\;\;\xmark\  &  $i$\;\;\cmark \\
+       \hline
+    \end{tabular}
+    \end{table}\\
+    This case is: $$c_{i}+V(i-2)$$
+
+    \item Coin $i$ and $i-1$ are selected but not $i-2$:
+    \begin{table}[htp]
+    \;\;\;\;\;\;\;\;\;\begin{tabular}{|c|c|c|c|c|}
+        \hline
+       \dots&  $V(i-3)$ & $i-2$\;\;\xmark & $i-1$\;\;\cmark  & $i$\;\;\cmark  \\
+       \hline
+    \end{tabular}
+    \end{table}\\
+    This case is: $$c_{i}+c_{i-1}+V(i-3)$$
+\end{itemize}
+All three of the above cases have a recursive call $V(i-k)$ for some $k\in \{1,2,3\}$ and for each respective case the element $c_{i-k+1}$ is not chosen, and since none of the cases select three coins in a row we can guarantee that the restriction of no 3 consecutive coins is guaranteed\\\\
+Taking the maximum of these 3 cases and combining them with our base cases gives the following correct reccurence: 
+$$V(i)=\begin{cases}
+c_{0} &\text{if}\;i=0\\
+c_{0}+c_{1}&\text{if}\;i=1\\
+\text{max}\bigg(V(i-1),\;\;c_i+V(i-2),\;\;c_{i}+c_{i-1}+V(i-3)\bigg) &\text{if}\;i\geq 2
+\end{cases}$$
+
+\end{document}
