@@ -1,0 +1,29 @@
+\documentclass{article}
+\usepackage[legalpaper, portrait, margin=0.5in]{geometry}
+\usepackage {amsmath}
+\usepackage {amssymb}
+\usepackage {enumerate}
+
+\title{CSC226 Exercise 7}
+\author{Dryden Bryson}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\newpage
+\section*{Q1.}\\
+To solve this, we can simply perform a transformation on the graph. Then use the approach described in the "background" section which utilizes a BFS to find the shortest path and correspondingly the minimum cost path in $\Theta(|V|+|E|)$ time.\\\\
+Taking our given graph $G=(V,E)$ we form $G'=(V',E')$ as follows:
+\begin{enumerate}[i]
+    \item Iterate over all vertices.
+    \item For each vertex examine outgoing edges.
+    \item If an edge $e=(u,v)$ with weight 2 is found, remove edge e and form $e_{1}=(u,d_{1})$ and $e_{2}=(d_{1},v)$ which essentially adds a dummy node in the middle.
+\end{enumerate}\\
+This transformation step has in all cases a running time of $\Theta(|V|+|E|)$ since all edges and vertices are iterated over, and the time to replace an edge with 2 is constant.\\\\
+We must also consider what effect the transformation has had on the tree because after there will be more edges and vertices. In the worst case, the originally tree had all edge weights equal to 2. Thus every edge duplicated and a new vertex was introduce for every edge.\\\\
+In the worst case we have that $V'=V+E$ and that $E'=2E$\\\\
+Now it suffices to run the BFS on $G'=(V',E')$ which will yield the shortest path upon discovery. In the worst case the BFS runs in $\Theta(|V|+3|E|)$.\\\\
+Since the transformation step looks at each vertex and each edge once, doing constant work at each. The transformation runs in linear time and since $G'$ will be at most a constant factor larger then $G$ we have that the BFS runs in constant time aswell. Thus the algorithm runs in $O(|V|+|E|)$ time.
+
+\end{document}
