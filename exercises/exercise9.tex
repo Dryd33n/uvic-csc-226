@@ -26,15 +26,16 @@ Consider the following graph $G$:\\
 \node (B) [right of=C] {B};
 \node (A) [right of=B] {A};
 
-\draw[arrow] (G) -- (F);
-\draw[arrow] (F) -- (E);
-\draw[arrow] (E) -- (D);
-\draw[arrow] (D) -- (C);
-\draw[arrow] (C) -- (B);
-\draw[arrow] (B) -- (A);
+\draw[arrow] (G) -- node[circle=false, minimum size=0pt, rectangle, draw=black, fill=white, inner sep=2pt] {1} (F);
+\draw[arrow] (F) -- node[circle=false, minimum size=0pt, rectangle, draw=black, fill=white, inner sep=2pt] {1} (E);
+\draw[arrow] (E) -- node[circle=false, minimum size=0pt, rectangle, draw=black, fill=white, inner sep=2pt] {1} (D);
+\draw[arrow] (D) -- node[circle=false, minimum size=0pt, rectangle, draw=black, fill=white, inner sep=2pt] {1} (C);
+\draw[arrow] (C) -- node[circle=false, minimum size=0pt, rectangle, draw=black, fill=white, inner sep=2pt] {1} (B);
+\draw[arrow] (B) -- node[circle=false, minimum size=0pt, rectangle, draw=black, fill=white, inner sep=2pt] {1} (A);
 \end{tikzpicture}
 \end{center}
-Now let us observe the following iterations of Floyd-Wartshall-Roy algorithm on $G$ and specifically the entrance on the distance matrix GB, here the dotted edges represent the edges of the graph and the red edges represent the known paths, for simplicities sake and sake of my sanity writing this latex document, we will assume all edges have weight 1 and intermediary paths will not be displyed, I.E if we have discovered a path from E to B, the path D to B will not be displayed:\\
+We will now examine the first 5 iterations of the Floyd-Warshall-Roy algorithm upon $G$. It will become exceedingly clear that the claim is false when we observe the path from G to B, which is a path with 5 edges that will not yet be discovered on the 5th iteration.\\\\
+On the left we will see the distance matrix, accompanied on the right by a visual representation of the graph with the edges of the graphs with the dotted arraws and the paths discovered by the algorithm in red. For visual simplicity the edge weights have been excluded from the diagram.
 \begin{itemize}
     \item $k=0$ (Initialization):\\[6pt]
     \begin{minipage}[c]{0.4\textwidth}
@@ -268,6 +269,7 @@ Now let us observe the following iterations of Floyd-Wartshall-Roy algorithm on 
 
     \draw[known] (C) to[bend left=30] (A);
     \draw[known] (D) to[bend left=30] (A);
+    \draw[known] (D) to[bend left=30] (B);
     \end{tikzpicture}
     \end{minipage}\\
     Path from D to A is discovered through intermediary node C which has a path to A
@@ -329,7 +331,10 @@ Now let us observe the following iterations of Floyd-Wartshall-Roy algorithm on 
 
     \draw[known] (C) to[bend left=30] (A);
     \draw[known] (D) to[bend left=30] (A);
-    \draw[known] (E) to[bend left=30] (A);
+    \draw[known] (D) to[bend left=30] (B);
+    \draw[known] (E) to[bend left=40] (A);
+    \draw[known] (E) to[bend left=35] (B);
+    \draw[known] (E) to[bend left=30] (C);
     \end{tikzpicture}
     \end{minipage}\\
     Path from E to A is discovered through intermediary node D which has a path to A
@@ -390,9 +395,15 @@ Now let us observe the following iterations of Floyd-Wartshall-Roy algorithm on 
     \draw[known] (B) to[bend right=30] (A);
 
     \draw[known] (C) to[bend left=30] (A);
-    \draw[known] (D) to[bend left=30] (A);
-    \draw[known] (E) to[bend left=30] (A);
-    \draw[known] (F) to[bend left=30] (A);
+    \draw[known] (D) to[bend left=30] (B);
+    \draw[known] (D) to[bend left=35] (A);
+    \draw[known] (E) to[bend left=40] (A);
+    \draw[known] (E) to[bend left=35] (B);
+    \draw[known] (E) to[bend left=30] (C);
+    \draw[known] (F) to[bend left=30] (D);
+    \draw[known] (F) to[bend left=35] (C);
+    \draw[known] (F) to[bend left=40] (B);
+    \draw[known] (F) to[bend left=45] (A);
     \end{tikzpicture}
     \end{minipage}\\
     Path from F to A is discovered through intermediary node E which has a path to A
