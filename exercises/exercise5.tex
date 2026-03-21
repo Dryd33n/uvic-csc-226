@@ -1,0 +1,23 @@
+\documentclass{article}
+\usepackage[legalpaper, portrait, margin=0.5in]{geometry}
+
+\title{CSC226 Exercise 5}
+\author{Dryden Bryson}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\newpage
+\section*{1)}
+We will proceed with proof by contradiction, thus, assume that for $C$ in $G$ the maximum weight edge of $C$, which we can denote $e$, is included in the MSWT of $G$ which we will denote $T$.\\\\
+
+We will let $e$ be defined as $e = (u, v)$. If we remove $e$ from $C$, there will still be a path from $u$ to $v$ in $C$ since $C$ is a cycle. We will denote this path as $P$. Since $e$ is the maximum weight edge in $C$ we know that for all the edges in $e' \in C \setminus \{e\}$, we have $w(e') < w(e)$ because the weights are all distinct and $e$ is the maximum weight edge in $C$.\\
+
+Now, let us remove $e$ from $T$, since $T$ is a spanning tree, removing $e$ will seperate $T$ into two disconnected components. But remember that we have $P$ which is a path from $u$ to $v$ which are now disconnected after removing $e$ from $T$. Since $P$ is a path which connects $u$ and $v$ there must be some edge $e_{1}$ in $P$ whose endpoints lie in the two distinct components of $T \setminus \{e\}$. Thus we can form a new spanning tree $T_{1}$ as follows:
+$$T_{1}=(T \setminus \{e\}) \cup \{e_{1}\}$$
+Since we have that $w(e) > w(e_{1})$, we have that the weight of $T_{1}$ is less than the weight of $T$. This is a contradiction since we assumed that $T$ was the MSWT of $G$. Thus, we can conclude that for $C$ in $G$ the maximum weight edge of $C$ is not included in the MSWT of $G$.
+
+
+
+\end{document}
