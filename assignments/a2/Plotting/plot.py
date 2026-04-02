@@ -5,18 +5,23 @@ from matplotlib.colors import LightSource
 ls = LightSource(azdeg=315, altdeg=45)
 
 
+# load csv and sort by densities
 df = pd.read_csv('results.csv')
 df = df.groupby(['density', 'vertex_count', 'k'], as_index=False).mean()
 densities = sorted(df['density'].unique())
 
-
+# for all 4 collections of densities
 for density in densities:
 
+    # get the data for that exact density
     subset = df[df['density'] == density].copy()
+
+    # some values will need to be snapped to these densities
     target_fractions = [0.01, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.8, 1.0]
 
     rows = []
 
+    # for each vertex count, find the closest k that matches each target fraction and keep that row
     for vertex_count, group in subset.groupby('vertex_count'):
         for target in target_fractions:
             target_k = max(1, round(target * vertex_count))
@@ -25,9 +30,11 @@ for density in densities:
             row['k_fraction'] = target
             rows.append(row)
 
+    # concatenate all the selected rows and average any duplicates (if any)
     clean = pd.concat(rows, ignore_index=True)
     clean = clean.groupby(['vertex_count', 'k_fraction'], as_index=False).mean()
 
+    # create the frames for each of the 3d surface plots
     dijkstra_pivot = clean.pivot(index='vertex_count', columns='k_fraction', values='dijkstra_median_ms')
     fwr_pivot = clean.pivot(index='vertex_count', columns='k_fraction', values='fwr_median_ms')
 
@@ -51,6 +58,7 @@ for density in densities:
     crossover_vc  = []
     crossover_z   = []
 
+    # fucked up situation to compute the crossover line, don't even ask man i died making this
     for i, vc in enumerate(vertex_counts):
         dijk_row = dijkstra_pivot.values[i]
         fwr_row  = fwr_pivot.values[i]
@@ -71,6 +79,8 @@ for density in densities:
         ax.plot(crossover_vc, crossover_k, crossover_z_raised,
                 color='red', linewidth=1, zorder=10, label='Crossover')
 
+
+    # legends and labels
     dijkstra_legend = plt.Rectangle((0, 0), 1, 1, fc='steelblue', alpha=0.75)
     fwr_legend = plt.Rectangle((0, 0), 1, 1, fc='tomato', alpha=0.45)
     crossover_legend = plt.Line2D([0], [0], color='red', linewidth=3)
@@ -88,6 +98,7 @@ for density in densities:
     ax.tick_params(labelsize=10)
     ax.dist = 11
 
+    # save the plotstiffer
     plt.tight_layout()
     plt.savefig(f'plot_density_{density}.png', dpi=300, bbox_inches='tight', facecolor='white')
     plt.close()
@@ -95,6 +106,7 @@ for density in densities:
 fig, ax = plt.subplots(figsize=(9, 6))
 fig.patch.set_facecolor('white')
 
+# crossover point graph
 for density in densities:
     subset = df[df['density'] == density].copy()
     subset['k_fraction'] = subset['k'] / subset['vertex_count']

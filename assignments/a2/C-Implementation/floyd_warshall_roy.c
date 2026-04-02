@@ -7,8 +7,8 @@
 #include "floyd_warshall_roy.h"
 
 unsigned int *floyd_warshall_roy(const AdjacencyMatrixGraph *graph) {
-    int           vertex_count = graph->vertex_count;
-    size_t        matrix_size  = (size_t)vertex_count * (size_t)vertex_count;
+    const int           vertex_count = graph->vertex_count;
+    const size_t        matrix_size  = (size_t)vertex_count * (size_t)vertex_count;
     unsigned int *distance     = malloc(matrix_size * sizeof(unsigned int)); // distance matrix
 
     // initialization: copy the weights from the graph to the distance matrix

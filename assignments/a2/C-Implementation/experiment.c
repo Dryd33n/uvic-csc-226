@@ -2,7 +2,7 @@
 #include "experiment.h"
 #include "dijkstra.h"
 
-int *generate_source_vertices(int vertex_count, int k) {
+int *generate_source_vertices(const int vertex_count, const int k) {
     int *sources    = malloc((size_t)k * sizeof(int));
     int  sources_found = 0;
 
@@ -21,7 +21,7 @@ int *generate_source_vertices(int vertex_count, int k) {
     return sources;
 }
 
-unsigned int **dijkstra_k_sources(const EdgeListGraph *graph, int *sources, int k) {
+unsigned int **dijkstra_k_sources(const EdgeListGraph *graph, const int *sources, int k) {
     unsigned int **distances = malloc((size_t)k * sizeof(unsigned int *));
 
     // run dijkstra from each source vertex

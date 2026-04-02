@@ -4,7 +4,7 @@
 
 // Adjacency list graph using likedlists
 
-EdgeListGraph *edge_list_graph_create(int vertex_count, int initial_edge_capacity) {
+EdgeListGraph *edge_list_graph_create(const int vertex_count, const int initial_edge_capacity) {
     EdgeListGraph *graph = malloc(sizeof *graph);
     graph->vertex_count  = vertex_count;
     graph->edge_count    = 0;
@@ -16,7 +16,7 @@ EdgeListGraph *edge_list_graph_create(int vertex_count, int initial_edge_capacit
     return graph;
 }
 
-void edge_list_graph_add_edge(EdgeListGraph *graph, int from, int to, unsigned int weight) {
+void edge_list_graph_add_edge(EdgeListGraph *graph, const int from, const int to, const unsigned int weight) {
     if (graph->edge_count == graph->edge_capacity) {
         graph->edge_capacity *= 2;
         graph->edges = realloc(graph->edges, (size_t)graph->edge_capacity * sizeof(Edge));

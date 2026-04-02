@@ -58,29 +58,38 @@ int main(void) {
         return 1;
     }
 
+    // print csv header
     fprintf(csv, "density,vertex_count,k,dijkstra_median_ms,fwr_median_ms,dijkstra_stddev_ms,fwr_stddev_ms\n");
 
+    // used for keeping track of how many experiements are being run in total
     int total_combinations = DENSITY_COUNT * VERTEX_COUNT_COUNT * K_FRACTION_COUNT;
     int combinations_completed = 0;
 
+    // for all densities
     for (int density_index = 0; density_index < DENSITY_COUNT; density_index++) {
         double density = densities[density_index];
 
+        // for all vertice count for the given density
         for (int vc_index = 0; vc_index < VERTEX_COUNT_COUNT; vc_index++) {
             int vertex_count = vertex_counts[vc_index];
 
+            //for all values of k given density and vertex count
             for (int k_index = 0; k_index < K_FRACTION_COUNT; k_index++) {
                 int k = (int)(k_fractions[k_index] * vertex_count);
                 if (k < 1) k = 1;
 
                 combinations_completed++;
+
+                // print to terminal for keeping track of wtf is going on
                 printf("combination %d / %d  |  density=%.2f  vertex_count=%d  k=%d\n",
                        combinations_completed, total_combinations,
                        density, vertex_count, k);
 
+                // arrays of doubles to hold times
                 double dijkstra_times[TRIALS];
                 double fwr_times[TRIALS];
 
+                // run multiple trials for this combination of parameters
                 for (int trial = 0; trial < TRIALS; trial++) {
                     // generate a random graph for each trial
                     EdgeListGraph        *edge_list_graph        = NULL;
@@ -91,22 +100,27 @@ int main(void) {
                     // generate random source vertices for this trial
                     int *sources = generate_source_vertices(vertex_count, k);
 
+                    // time dijkstras
                     LARGE_INTEGER dijkstra_start, dijkstra_end;
                     QueryPerformanceCounter(&dijkstra_start);
                     unsigned int **dijkstra_distances = dijkstra_k_sources(edge_list_graph, sources, k);
                     QueryPerformanceCounter(&dijkstra_end);
 
+                    //time fwr
                     LARGE_INTEGER fwr_start, fwr_end;
                     QueryPerformanceCounter(&fwr_start);
                     unsigned int *fwr_distances = floyd_warshall_roy(adjacency_matrix_graph);
                     QueryPerformanceCounter(&fwr_end);
 
+                    // calculate times in milliseconds and store in arrays
                     dijkstra_times[trial] = (double)(dijkstra_end.QuadPart - dijkstra_start.QuadPart)
                                             / frequency.QuadPart * 1000.0;
                     fwr_times[trial]      = (double)(fwr_end.QuadPart - fwr_start.QuadPart)
                                             / frequency.QuadPart * 1000.0;
 
                     for (int i = 0; i < k; i++) free(dijkstra_distances[i]);
+
+                    // free allocated memory
                     free(dijkstra_distances);
                     free(fwr_distances);
                     free(sources);
@@ -114,20 +128,25 @@ int main(void) {
                     adjacency_matrix_graph_free(adjacency_matrix_graph);
                 }
 
+                // sort the times in order to find median
                 qsort(dijkstra_times, TRIALS, sizeof(double), compare_doubles);
                 qsort(fwr_times,      TRIALS, sizeof(double), compare_doubles);
 
+                // write to csv file
                 fprintf(csv, "%.2f,%d,%d,%.4f,%.4f,%.4f,%.4f\n",
                         density, vertex_count, k,
                         median(dijkstra_times, TRIALS),
                         median(fwr_times,      TRIALS),
                         stddev(dijkstra_times, TRIALS),
                         stddev(fwr_times,      TRIALS));
+
+                // saves it to csv after every combination so if the program crashes we still have some results
                 fflush(csv);
             }
         }
     }
 
+    // close csv file
     fclose(csv);
     return 0;
 }
